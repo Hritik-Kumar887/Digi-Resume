@@ -1,127 +1,111 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { pipe } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+import { AlertService } from './services/alert-service';
+import { ApiService } from './services/api-service';
 
 @Component({
   selector: 'app-root',
   template: `
-  <mat-toolbar color="primary">
-    <h1>Hello!</h1>
-    <button mat-raised-button color="accent">Login</button>
-    <button mat-raised-button color="accent">Signup</button>
-    <button mat-raised-button color="accent">Contact</button>
-  </mat-toolbar>
-  <mat-card class="myCard">
-  <mat-card-header>
-    <div mat-card-avatar class="header-image"></div>
-    <mat-card-title>Hritik Sultania</mat-card-title>
-    <mat-card-subtitle>Developer</mat-card-subtitle>
-  </mat-card-header>
-  <img mat-card-image src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjE2fHxwcm9ncmFtbWVyfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="programmer">
-  <mat-card-content>
-    <p>
-      Hritik has been working as a senior javascipt-developer since last 4 years and has been in the
-      leading role at various projects working at more than seven companies. He originally hails from
-      Rajasthan, India.
-    </p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button>LIKE</button>
-    <button mat-button>SHARE</button>
-  </mat-card-actions>
-  </mat-card>
-  <!-- <input (input)="getUserName($event)" type="text" placeholder="Enter Username">
-  <button (click)='saveUserName()'>Save Name</button> -->
-  <!-- <h2>Your userName is: {{displayName}}</h2> -->
-
-  <!-- <input [(ngModel)]="newName" type="text" placeholder="Enter Name">
-  <h2>Your userName is: {{newName}}</h2> -->
-  <!-- <button mat-raised-button color="primary" (click)='changeName()'>Change Name</button> -->
-  <!-- <button (click)="toggleButton()" [disabled]='isButtonDisabled'>{{isButtonDisabled ? 'Enable Me' : 'Disable Me'}}</button>
-  <button (click)="this.isButtonDisabled = false">Enable button</button> -->
-  <!-- <app-abc></app-abc> -->
-  <app-video (editVideo)="onEdit()" title="video 1" desc="video1 desc" url="#"></app-video>
-  <app-video title="video 2" desc="video2 desc" url="#"></app-video>
-  <br>
-  <br>
-  
-  <form class="example-form">
-  <div fxLayout="row" fxLayoutGap="20px">
-  <mat-form-field fxFlex="20%" appearance="fill">
-    <mat-label>First name</mat-label>
-    <input matInput placeholder="Ex. Tony">
-  </mat-form-field>
-  <mat-form-field fxFlex="45%" appearance="fill">
-    <mat-label>Last name</mat-label>
-    <input matInput placeholder="Ex. Stark">
-  </mat-form-field>
-  </div>
-  <mat-form-field class="example-full-width" appearance="fill">
-    <mat-label>Leave a comment</mat-label>
-    <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
-  </mat-form-field>
-</form>
+    <form (ngSubmit)="this.loginForm.valid && login()" [formGroup]="this.loginForm" class="overlay" fxLayoutAlign="center center" fxLayout="column" fxLayoutGap="30px">
+      <div style="width: 100%;" fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="20px">
+        <img width="12%" src="../assets/headhunting.png" alt="logo">
+        <h1 id="logoName">Digi-Resume</h1>
+      </div>
+      <mat-card fxLayout="column">
+        <h2 style="font-family: cursive; color: #4a80aa; font-weight: bold;">
+          Login
+        </h2>
+        <mat-form-field>
+          <input formControlName="email" matInput type="email" placeholder="Email">
+          <mat-error>Valid email-id is required</mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <input formControlName="password" matInput type="password" placeholder="Password">
+          <mat-error>Valid password is required (8-14 digits)</mat-error>
+        </mat-form-field>
+        <a style="margin-top: 0.7rem" href="#">Forgot Password?</a>
+        <div style="margin-top: 2rem;" fxLayout="row" fxLayoutAlign="end" fxLayoutGap="20px">
+        <button type="submit" mat-raised-button color="primary">Login</button>
+        <button (click)="signup()" type="button" mat-raised-button color="accent">Signup</button>
+        </div>
+      </mat-card>
+    </form>
     `,
   styles: [`
-  .example-form{
-    background : #bf9dfb;
-    padding-top : 8px;
-  }
-
-  .header-image{
-    background-image : url('https://images.unsplash.com/photo-1542546068979-b6affb46ea8f?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fHByb2dyYW1tZXJ8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60');
-    background-size: cover;
-  }
-
-  .myCard{
-    max-width : 400px;
-    margin-top : 14px;
-    margin-left : 14px;
-  }
-
-  img{
-    background-size : cover; 
-  }
-
-  .example-full-width{
-    width : 40vw;
-  }
-
-  h1{
-    color: #d0ace6;
-  }
-  h2{
-    color: orange;
-  }
-  button{
-    margin-left : 18px;
-  }
+    .overlay{
+      width : 100%;
+      height : 100%;
+      background-image: url(../assets/logbackgroundd.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    #logoName{
+      font-family: cursive;
+      font-weight: bolder;
+      /* font-size: 2em; */
+      font-size: 42px;
+      color: #f6f6f6;
+    }
+    mat-card{
+      height : 20rem;
+      width : 28rem;
+    }
+    button{
+      color : white !important;
+    }
   `]
 })
 export class AppComponent {
   title = 'angular-course';
-  userName = '';
-  displayName = '';
-  // newName = '';
-  userid = 10;
-  isButtonDisabled = false;
+  loginForm : FormGroup;
+  mySubject = new BehaviorSubject('hello world!');
+  // myObsever!: Observable<any>;
 
-  // toggleButton(){
-  //   this.isButtonDisabled = !this.isButtonDisabled;
-  // }
-
-  // getUserName(data:any){
-  //   this.userName = data.target.value;
-  // }
-
-  // saveUserName(){
-  //   this.displayName = this.userName;
-  // }
-
-  // changeName(){
-  //   this.newName = 'i am a new value';
-  // }
-
-  onEdit(){
-    console.log('called edit button');
+  constructor(private apiService: ApiService, private alertService: AlertService){
+    this.loginForm = new FormGroup({
+      email: new FormControl(null, [Validators.required, Validators.email]),
+      password: new FormControl(null, [Validators.required, Validators.minLength(8), Validators.maxLength(14)]),
+    });
+    this.apiService.getUsers().subscribe(data=>{
+      this.alertService.success('done!');
+    }, error=>{
+      this.alertService.error(error.message);
+    });
+    const observer = this.loginForm.valueChanges.pipe(map(data=>data.email), debounceTime(500), distinctUntilChanged());
+    observer.subscribe(data=>{
+      console.log(data);
+    })
   }
 
+  login(){
+    // using map
+    // observable is throwing -> email & password
+    /*const mapObserver = this.loginForm.valueChanges.pipe(map((data: { email: any; }) => {
+      return data.email;
+    }));
+    mapObserver.subscribe(data => {
+      console.log(data);
+    })*/
+
+    // using filter
+    /*const filterObserver = this.loginForm.valueChanges.pipe(filter(data => {
+      return data.email === 'ritik@ab.com'
+    }))
+    filterObserver.subscribe(data=>console.log(data))*/
+
+    // this.mySubject.next(this.loginForm.value);
+    
+  }
+
+  signup(){
+    // this.mySubject.subscribe(data=>{
+    //   console.log(data);
+    // })
+    // console.log(this.mySubject.getValue());
+    
+  }
 }

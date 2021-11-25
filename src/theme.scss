@@ -3,20 +3,54 @@
 @include mat-core();
 
 $md-primary: (
-    50 : #fef4e0,
-    100 : #fce3b3,
-    200 : #fad080,
-    300 : #f7bd4d,
-    400 : #f6af26,
-    500 : #f4a100,
-    600 : #f39900,
-    700 : #f18f00,
-    800 : #ef8500,
-    900 : #ec7400,
+    50 : #eff6fc,
+    100 : #d7e8f7,
+    200 : #bdd9f2,
+    300 : #a3c9ed,
+    400 : #8fbee9,
+    500 : #7bb2e5,
+    600 : #73abe2,
+    700 : #68a2de,
+    800 : #5e99da,
+    900 : #4b8ad3,
     A100 : #ffffff,
-    A200 : #ffede0,
-    A400 : #ffd0ad,
-    A700 : #ffc293,
+    A200 : #fafcff,
+    A400 : #c7e0ff,
+    A700 : #add2ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+
+$md-accent: (
+    50 : #fdf8e6,
+    100 : #fbedc2,
+    200 : #f8e199,
+    300 : #f5d470,
+    400 : #f3cb51,
+    500 : #f1c232,
+    600 : #efbc2d,
+    700 : #edb426,
+    800 : #ebac1f,
+    900 : #e79f13,
+    A100 : #ffffff,
+    A200 : #fff4e2,
+    A400 : #ffe2af,
+    A700 : #ffd896,
     contrast: (
         50 : #000000,
         100 : #000000,
@@ -35,42 +69,9 @@ $md-primary: (
     )
 );
 
-$md-accent: (
-    50 : #e9f2e5,
-    100 : #c8debf,
-    200 : #a4c894,
-    300 : #80b169,
-    400 : #64a149,
-    500 : #499029,
-    600 : #428824,
-    700 : #397d1f,
-    800 : #317319,
-    900 : #21610f,
-    A100 : #aaff96,
-    A200 : #80ff63,
-    A400 : #57ff30,
-    A700 : #42ff17,
-    contrast: (
-        50 : #000000,
-        100 : #000000,
-        200 : #000000,
-        300 : #000000,
-        400 : #000000,
-        500 : #ffffff,
-        600 : #ffffff,
-        700 : #ffffff,
-        800 : #ffffff,
-        900 : #ffffff,
-        A100 : #000000,
-        A200 : #000000,
-        A400 : #000000,
-        A700 : #000000,
-    )
-);
-
 
 $mmb-palette-primary: mat-palette($md-primary);
 $mmb-palette-accent: mat-palette($md-accent);
 
-$mmb-app-theme: mat-light-theme($md-primary, $md-accent);
+$mmb-app-theme: mat-light-theme($mmb-palette-primary, $mmb-palette-accent);
 @include angular-material-theme($mmb-app-theme)
