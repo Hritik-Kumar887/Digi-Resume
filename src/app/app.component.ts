@@ -72,9 +72,9 @@ export class AppComponent {
     });
     this.apiService.getUsers().subscribe(data=>{
       this.alertService.success('done!');
-    }, error=>{
-      this.alertService.error(error.message);
-    });
+    }, (error=>{
+      console.log(error, 'app component');
+    }));
     const observer = this.loginForm.valueChanges.pipe(map(data=>data.email), debounceTime(500), distinctUntilChanged());
     observer.subscribe(data=>{
       console.log(data);

@@ -6,6 +6,6 @@ export class ApiService {
     constructor(private httpService: HttpService){
     }
     getUsers(){
-        return this.httpService.get('/users', {page:2});
+        return this.httpService.get('/users');
     }
 }
