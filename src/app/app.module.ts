@@ -10,12 +10,16 @@ import { HttpService } from './services/http-service';
 import { ApiService } from './services/api-service';
 import { HttpClientModule } from '@angular/common/http';
 import { AlertService } from './services/alert-service';
+import { LoginComponent } from './container/login.component';
+import { SignupComponent } from './container/signup.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    LoginComponent,
+    SignupComponent,
   ],
   imports: [
     BrowserModule,
